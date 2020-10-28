@@ -2,20 +2,23 @@ import os
 import shutil
 
 
-name = input("User")
+if (not os.path.exists('home/leviathan/.config/dowloandSort/')):
+    os.makedirs('home/leviathan/.config/dowloandSort/', exist_ok = True)
+    print('Creating ~/.config/dowloandsort')
 
-if (os.path.exists('/home/' + name + '/.config/dowloandSort/') == False):
-    print('Creating ~/.config')
-    os.makedirs('/home/' + name + '/.config/dowloandSort/', exist_ok = True)
+if (not os.path.exists('/home/leviathan/.config/dowloandSort/saved.txt')):
+    o = open('/home/leviathan/.config/dowloandSort/saved.txt', 'x')
+    print('Creating ~/.config/downloandSort/saved.txt')
 
-print('Opening ~/.config/saved.txt.')
+print('Opening ~/.config/dowloandSort/saved.txt.')
 
-o = open('/home/' + name + '/.config/dowloandsSort/saved.txt', 'a+')
+o = open('home/leviathan/.config/dowloandSort/saved.txt', 'a+')
 file_type = [int(file_type) for file_type in o.readlines()]
-file_path = '/home/' + name + '/Downloads'
+file_path = '/home/leviathan/Downloads'
 download_list = os.listdir(file_path)
 extension = ''
 
+print('Opening ~/Dowloand')
 print('Starting file transfer...')
 
 for file in download_list:
@@ -37,6 +40,8 @@ for file in download_list:
             shutil.move(file_path + '/' + str(file), new)
             print('Sent:', file)
 
-print('Closing ~/.config/saved.txt')
-print('Done.') 
+print('Closing ~/.config/downloandSort/saved.txt')
+print('Done.')
 o.close()
+
+## place this file to /home/user_name/.dowloandsort/
