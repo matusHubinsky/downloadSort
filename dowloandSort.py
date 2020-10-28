@@ -3,7 +3,6 @@ import shutil
 
 
 name = input("User")
-## name = 'leviathan'
 
 if (os.path.exists('/home/' + name + '/.config/dowloandSort/') == False):
     print('Creating ~/.config')
@@ -38,7 +37,6 @@ for file in download_list:
             shutil.move(file_path + '/' + str(file), new)
             print('Sent:', file)
 
-
 print('Closing ~/.config/saved.txt')
-o.close()
 print('Done.') 
+o.close()
