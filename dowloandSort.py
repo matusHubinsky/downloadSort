@@ -2,20 +2,29 @@ import os
 import shutil
 
 
-name = input("User")
+if (not os.path.exists('/home/leviathan/.config/dowloandSort')):
+    os.makedirs('/home/leviathan/.config/dowloandSort', exist_ok=True)
+    print('Creating ~/.config/dowloandsort')
 
-if (os.path.exists('/home/' + name + '/.config/dowloandSort/') == False):
-    print('Creating ~/.config')
-    os.makedirs('/home/' + name + '/.config/dowloandSort/', exist_ok = True)
+if (not os.path.exists('/home/leviathan/.config/dowloandSort/saved.txt')):
+    open('/home/leviathan/.config/dowloandSort/saved.txt', 'x')
+    print('Creating ~/.config/downloandSort/saved.txt')
 
-print('Opening ~/.config/saved.txt.')
+if (not os.path.exists('/home/leviathan/.config/autostart/python.desktop')):s
+    open('/home/leviathan/.config/autostart/python.desktop', 'x')
+    print('Creating ~/.config/autostart/python.desktop')
 
-o = open('/home/' + name + '/.config/dowloandsSort/saved.txt', 'a+')
+print('Opening ~/.config/dowloandSort/saved.txt.')
+
+o = open('/home/leviathan/.config/dowloandSort/saved.txt', 'a+')
 file_type = [int(file_type) for file_type in o.readlines()]
-file_path = '/home/' + name + '/Downloads'
+file_path = '/home/leviathan/Downloads'
 download_list = os.listdir(file_path)
 extension = ''
+dontSent = []
+Sent = []
 
+print('Opening ~/Dowloand')
 print('Starting file transfer...')
 
 for file in download_list:
@@ -23,20 +32,27 @@ for file in download_list:
 
     if (len(divided) == 1):
         if (divided not in file_type):
-            print("Don't sent: " + file)
+            dontSent.append(file)
     else:
-        extension = divided[len(divided)-1]
+        extension = divided[len(divided) - 1]
 
-        if (extension not in download_list): 
-            os.makedirs(file_path + '/' + extension, exist_ok = True) 
-            if (extension not in file_type): 
+        if (extension not in download_list):
+            os.makedirs(file_path + '/' + extension, exist_ok=True)
+            if (extension not in file_type):
                 file_type.append(str(extension))
-                o.write(str(extension) + ' ') 
+                o.write(str(extension) + ' ')
+                Sent.append(file)
         else:
             new = file_path + '/' + extension
             shutil.move(file_path + '/' + str(file), new)
-            print('Sent:', file)
+            Sent.append(file)
 
-print('Closing ~/.config/saved.txt')
-print('Done.') 
+for element in dontSent:
+    print("Don't sent:", element)
+
+for element in Sent:
+    print("Sent:", element)
+
+print('Closing ~/.config/downloandSort/saved.txt')
+print('Done.')
 o.close()
