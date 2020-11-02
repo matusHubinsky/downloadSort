@@ -1,90 +1,52 @@
 import os
 import shutil
 import time
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
-
-class Watcher:
-    DIRECTORY_TO_WATCH = "/home/leviathan/Downloads"
-
-    def __init__(self):
-        self.observer = Observer()
-
-    def run(self):
-        event_handler = Handler()
-        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH)
-        self.observer.start()
-        try:
-            while True:
-                time.sleep(5)
-        except:
-            self.observer.stop()
-            print("Error")
-
-        self.observer.join()
 
 
-class Handler(FileSystemEventHandler):
+def new_name(file_name, file_ext, file_path, i):
+    same_name = file_path + '/' + file_ext + '/' + file_name + file_ext
 
-    @staticmethod
-    def on_any_event(event):
-        if (event.is_directory):
-            if (not os.path.exists('/home/leviathan/.config/dowloandSort')):
-                os.makedirs('/home/leviathan/.config/dowloandSort', exist_ok=True)
-                print('Creating ~/.config/dowloandsort')
+    if (os.path.exists(same_name)):
+        if ((ord(file_name[len(file_name) - 1]) >= 48) and (ord(file_name[len(file_name) - 1]) <= 57)):
+            a = int(file_name[len(file_name) - 1]) + 1
+            return new_name(file_name[:len(file_name) - 1] + str(a), file_ext, file_path, i + 1)
+        else:
+            return new_name(file_name + str(i), file_ext, file_path, i + 1)
+    return file_name + file_ext
 
-            if (not os.path.exists('/home/leviathan/.config/dowloandSort/saved.txt')):
-                open('/home/leviathan/.config/dowloandSort/saved.txt', 'x')
-                print('Creating ~/.config/downloandSort/saved.txt')
 
-            if (not os.path.exists('/home/leviathan/.config/autostart/python.desktop')):
-                open('/home/leviathan/.config/autostart/python.desktop', 'x')
-                print('Creating ~/.config/autostart/python.desktop')
-            
-            print('Opening ~/.config/dowloandSort/saved.txt.')
+print('Checking folders...')
 
-            o = open('/home/leviathan/.config/dowloandSort/saved.txt', 'a+')
-            file_type = [int(file_type) for file_type in o.readlines()]
-            file_path = '/home/leviathan/Downloads'
-            download_list = os.listdir(file_path)
-            extension = ''
-            dontSent = []
-            Sent = []
+if (not os.path.exists('/home/leviathan/.config/dowloandSort')):
+    os.makedirs('/home/leviathan/.config/dowloandSort', exist_ok=True)
+    print('Creating ~/.config/dowloandsort')
 
-            print('Opening ~/Dowloand')
-            print('Starting file transfer...')
+if (not os.path.exists('/home/leviathan/.config/dowloandSort/saved.txt')):
+    open('/home/leviathan/.config/dowloandSort/saved.txt', 'x')
+    print('Creating ~/.config/downloandSort/saved.txt')
 
-            for file in download_list:
-                divided = file.split('.')
+if (not os.path.exists('/home/leviathan/.config/autostart/python.desktop')):
+    open('/home/leviathan/.config/autostart/python.desktop', 'x')
+    print('Creating ~/.config/autostart/python.desktop')
 
-                if (len(divided) == 1):
-                    if (divided not in file_type):
-                        dontSent.append(file)
-                else:
-                    extension = divided[len(divided) - 1]
+o = open('/home/leviathan/.config/dowloandSort/saved.txt', 'a+')
+file_types = [int(file_types) for file_types in o.readlines()]
+file_path = '/home/leviathan/Downloads'
 
-                    if (extension not in download_list):
-                        os.makedirs(file_path + '/' + extension, exist_ok=True)
-                        if (extension not in file_type):
-                            file_type.append(str(extension))
-                            o.write(str(extension) + ' ')
-                            Sent.append(file)
-                    else:
-                        new = file_path + '/' + extension
-                        shutil.move(file_path + '/' + str(file), new)
-                        Sent.append(file)
+while (True):
+    for file in os.listdir(file_path):
+        file_name, file_ext = os.path.splitext(file)
 
-            for element in dontSent:
-                print("Don't sent:", element)
+        if (file_ext):
+            if (not (file_ext in file_types)):
+                os.makedirs(file_path + '/' + file_ext, exist_ok=True)
+                o.write(str(file_ext))
 
-            for element in Sent:
-                print("Sent:", element)
+            new = new_name(file_name, file_ext, file_path, 1)
+            os.rename(file, new)
+            print(new)
+            shutil.move(file_path + '/' + file, file_path + '/' + file_ext + '/' + new)
+            print("Sent:", file)
 
-            print('Closing ~/.config/downloandSort/saved.txt')
-            print('Done.')
-            o.close()
-
-if __name__ == '__main__':
-    w = Watcher()
-    w.run()
-
+    print('I am waiting')
+    time.sleep(10)
