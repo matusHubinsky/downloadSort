@@ -32,6 +32,7 @@ if (not os.path.exists('/home/leviathan/.config/autostart/python.desktop')):
 o = open('/home/leviathan/.config/dowloandSort/saved.txt', 'a+')
 file_types = [int(file_types) for file_types in o.readlines()]
 file_path = '/home/leviathan/Downloads'
+sent = []
 
 while (True):
     for file in os.listdir(file_path):
@@ -43,10 +44,11 @@ while (True):
                 o.write(str(file_ext))
 
             new = new_name(file_name, file_ext, file_path, 1)
-            os.rename(file, new)
-            print(new)
+            os.rename(file_path + '/' + file, file_path + '/' + new)
             shutil.move(file_path + '/' + file, file_path + '/' + file_ext + '/' + new)
-            print("Sent:", file)
+            sent.append(new)
 
+    print('Sent:')
+    print(' '.join(str(word) for word in sent))
     print('I am waiting')
     time.sleep(10)
